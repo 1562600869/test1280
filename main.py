@@ -2,7 +2,12 @@ import argparse
 import sys
 import json
 
-from models import ValidationError
+from models import (
+    ValidationError,
+    VALID_STAGE_TYPES,
+    VALID_STAGE_STATUSES,
+    VALID_SHOW_TYPES,
+)
 import commands
 
 
@@ -52,8 +57,14 @@ def main():
     p_add.add_argument("stage_id", help="场地编号")
     p_add.add_argument("name", help="场地名称")
     p_add.add_argument("--capacity", type=int, required=True, help="容纳人数")
-    p_add.add_argument("--type", required=True, help="场地类型: 镜框式/黑匣子/露天/多功能")
-    p_add.add_argument("--status", required=True, help="场地状态: 开放/维修")
+    p_add.add_argument(
+        "--type", required=True, choices=VALID_STAGE_TYPES,
+        help=f"场地类型: {'/'.join(VALID_STAGE_TYPES)}",
+    )
+    p_add.add_argument(
+        "--status", required=True, choices=VALID_STAGE_STATUSES,
+        help=f"场地状态: {'/'.join(VALID_STAGE_STATUSES)}",
+    )
     p_add.set_defaults(func=cmd_add_stage)
 
     p_apply = sub.add_parser("apply", help="申请演出")
@@ -63,7 +74,10 @@ def main():
     p_apply.add_argument("--date", required=True, help="演出日期 YYYY-MM-DD")
     p_apply.add_argument("--start", required=True, help="开始时间 HH:MM")
     p_apply.add_argument("--end", required=True, help="结束时间 HH:MM")
-    p_apply.add_argument("--type", required=True, help="演出类型: 音乐会/话剧/舞蹈/综艺/其他")
+    p_apply.add_argument(
+        "--type", required=True, choices=VALID_SHOW_TYPES,
+        help=f"演出类型: {'/'.join(VALID_SHOW_TYPES)}",
+    )
     p_apply.set_defaults(func=cmd_apply)
 
     p_approve = sub.add_parser("approve", help="审批通过")
